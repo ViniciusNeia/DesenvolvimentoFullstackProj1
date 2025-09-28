@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import styles from "./SearchPets.module.css";
 import Card from "../Card/Card.jsx";
@@ -37,7 +37,7 @@ function SearchPets() {
                 setSearchResults(data);
                 setShowPopup(false);
             }
-        } catch (error) {
+        } catch {
             setPopupMessage("Error when finding. Try again!");
             setShowPopup(true);
             setSearchResults([]);

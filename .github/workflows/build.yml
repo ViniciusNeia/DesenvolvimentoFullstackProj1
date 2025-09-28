@@ -33,6 +33,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
       - name: Deploy AWS S3
-        run: aws s3 sync dist s3://app.tryogym.com --delete
-      
-
+        run: aws s3 sync dist s3://petfy.comm.br --delete

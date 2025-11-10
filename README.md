@@ -2,6 +2,7 @@
 
 Aplicação web desenvolvida como parte do **Projeto 1 da disciplina Programação Web Fullstack (ES47B-ES71)**.  
 O objetivo é fornecer dicas básicas de cuidados, expectativa de vida e informações sobre raças de cães e gatos, utilizando uma **SPA (Single Page Application)** em React.js.
+Clique [aqui](https://dj4g9f72f15q1.cloudfront.net/) para acessar o site na versão que esta disponivel nesse repositório!
 
 ---
 

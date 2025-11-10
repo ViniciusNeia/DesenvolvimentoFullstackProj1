@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./CardExpanded.module.css";
-import { usePetContext } from "../../contexts/PetContext";
+import { usePetContext } from "../../contexts/PetContext.jsx";
 
 function CardExpanded() {
     const { selectedPet, setSelectedPet, getImageUrl, species } = usePetContext();

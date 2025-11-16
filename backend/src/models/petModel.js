@@ -29,3 +29,19 @@ export async function getAllPets() {
 
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
+
+export async function updatePet(petId, updates) {
+    const docRef = db.collection(PET_COLLECTION).doc(petId);
+    await docRef.update({
+        ...updates,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    const snap = await docRef.get();
+    return { id: snap.id, ...snap.data() };
+}
+
+export async function deletePet(petId) {
+    const docRef = db.collection(PET_COLLECTION).doc(petId);
+    await docRef.delete();
+    return true;
+}

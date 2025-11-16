@@ -67,6 +67,18 @@
 	margin-bottom: 0.5rem;
 }
 
+.cardAge {
+	font-size: 1rem;
+	color: #fff;
+	margin-bottom: 0.5rem;
+}
+
+.cardApiDescription {
+	font-size: 0.95rem;
+	color: #ddd;
+	margin-bottom: 0.5rem;
+}
+
 .cardSpecies {
 	position: absolute;
 	top: 12px;

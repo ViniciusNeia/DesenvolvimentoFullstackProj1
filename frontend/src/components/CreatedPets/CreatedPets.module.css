@@ -1,0 +1,16 @@
+.container { 
+    padding: 16px; 
+}
+.list { 
+    display:flex; 
+    gap:12px; 
+    overflow-x:auto; 
+    padding:8px 0 
+}
+.list::-webkit-scrollbar { 
+    height:8px 
+}
+.list::-webkit-scrollbar-thumb { 
+    background:#ddd; 
+    border-radius:4px 
+}

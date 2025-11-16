@@ -1,6 +1,8 @@
 .header {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
     background: #181e25;
     display: flex;
     align-items: center;
@@ -9,7 +11,6 @@
     height: 70px;
     z-index: 10;
     top: 0;
-    left: 0;
 }
 
 .logo {
@@ -24,4 +25,61 @@
     margin: 0;
     white-space: nowrap;
     text-decoration: none;
+}
+
+.addPetButton {
+    background: rgb(241, 208, 160);
+    color: #ffffff;
+    text-shadow: #000000 0.5px 0.5px 2px; 
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.logoutButton {
+    position: absolute;
+    left: 2vw;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    color: #f1d0a0;
+    border: 1px solid rgba(241,208,160,0.2);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.logoutButton:hover {
+    background: rgba(241,208,160,0.08);
+}
+.controlsWrapper {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0 6px 0;
+}
+
+.viewToggle {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.toggleBtn {
+    background: transparent;
+    border: none;
+    color: #ddd;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.toggleBtn:hover { opacity: 0.95 }
+
+.active {
+    background: #ffb347;
+    color: #1b1b1b;
 }

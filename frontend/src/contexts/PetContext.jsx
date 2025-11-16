@@ -16,6 +16,7 @@ export const PetProvider = ({ children }) => {
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [selectedPet, setSelectedPet] = useState(null);
+    const [createdPets, setCreatedPets] = useState([]);
 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [popupTitle, setPopupTitle] = useState("");
@@ -73,9 +74,18 @@ export const PetProvider = ({ children }) => {
     };
 
     const getImageUrl = (pet) => {
-        if (pet.reference_image_id) {
-            return `https://cdn2.the${species}api.com/images/${pet.reference_image_id}.jpg`;
+        if (!pet){
+            return null;
         }
+        if (pet.imageUrl){ 
+            return pet.imageUrl;
+        }
+        const petSpecies = pet.species || species || 'dog';
+        if (pet.reference_image_id) {
+            return `https://cdn2.the${petSpecies}api.com/images/${pet.reference_image_id}.jpg`;
+        }
+        const refId = pet.breedDetails?.reference_image_id || pet.breedDetails?.image?.id || pet.image?.id;
+        if (refId) return `https://cdn2.the${petSpecies}api.com/images/${refId}.jpg`;
         return null;
     };
 
@@ -96,16 +106,170 @@ export const PetProvider = ({ children }) => {
         return () => clearTimeout(debounceTimeout.current);
     }, [searchValue, species]);
 
+
+    useEffect(() => {
+        let mounted = true;
+        async function loadCreatedPets() {
+            try {
+                const resp = await fetch('/api/pets', { credentials: 'include' });
+                if (!mounted) return;
+                if (resp.status === 401) {
+                    return;
+                }
+                if (!resp.ok) {
+                    const err = await resp.json().catch(() => ({}));
+                    showPopupModal('Erro', err.error || 'Falha ao carregar pets', 'error');
+                    return;
+                }
+                const data = await resp.json();
+                const list = Array.isArray(data) ? data : [];
+
+    
+                async function enrichPet(p) {
+                    const petCopy = { ...p };
+                    const specie = petCopy.species || 'dog';
+                    const makeImageUrl = (b) => {
+                        if (!b) return null;
+                        const id = b.reference_image_id || b.image?.id;
+                        if (!id) return null;
+                        return `https://cdn2.the${specie}api.com/images/${id}.jpg`;
+                    };
+
+                    if (petCopy.breedDetails) {
+                        petCopy.imageUrl = petCopy.imageUrl || makeImageUrl(petCopy.breedDetails);
+                        return petCopy;
+                    }
+
+                    try {
+                        const apiBase = specie === 'dog' ? 'https://api.thedogapi.com/v1' : 'https://api.thecatapi.com/v1';
+                        const q = encodeURIComponent(petCopy.breed || '');
+                        if (!q) return petCopy;
+                        const resp2 = await fetch(`${apiBase}/breeds/search?q=${q}`);
+                        if (!resp2.ok) return petCopy;
+                        const arr = await resp2.json();
+                        if (Array.isArray(arr) && arr.length > 0) {
+                            const b = arr[0];
+                            petCopy.breedDetails = b;
+                            petCopy.imageUrl = makeImageUrl(b);
+                        }
+                    } catch (err) {
+                        console.error('enrichPet error', err);
+                    }
+                    return petCopy;
+                }
+
+                const enriched = await Promise.all(list.map(enrichPet));
+                setCreatedPets(enriched);
+            } catch (err) {
+                console.error('loadCreatedPets error', err);
+            }
+        }
+        loadCreatedPets();
+        return () => { mounted = false; };
+    }, []);
+
+    const deleteCreatedPet = async (petId) => {
+        try {
+            const resp = await fetch(`/api/pets/${petId}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            if (!resp.ok) {
+                const err = await resp.json().catch(() => ({}));
+                throw new Error(err.error || 'Erro ao deletar pet');
+            }
+            setCreatedPets(prev => prev.filter(p => p.id !== petId));
+            if (selectedPet?.id === petId) setSelectedPet(null);
+            showPopupModal('Sucesso', 'Pet deletado', 'success');
+            return true;
+        } catch (err) {
+            console.error('deleteCreatedPet error', err);
+            showPopupModal('Erro', err.message || 'Erro ao deletar pet', 'error');
+            return false;
+        }
+    };
+
+    const updateCreatedPet = async (petId, updates) => {
+        try {
+            const resp = await fetch(`/api/pets/${petId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(updates),
+            });
+            if (!resp.ok) {
+                const err = await resp.json().catch(() => ({}));
+                throw new Error(err.error || 'Erro ao atualizar pet');
+            }
+            const updated = await resp.json();
+            setCreatedPets(prev => prev.map(p => (p.id === petId ? { ...p, ...updated } : p)));
+            if (selectedPet?.id === petId) setSelectedPet(prev => ({ ...prev, ...updated }));
+            showPopupModal('Sucesso', 'Pet atualizado', 'success');
+            return updated;
+        } catch (err) {
+            console.error('updateCreatedPet error', err);
+            showPopupModal('Erro', err.message || 'Erro ao atualizar pet', 'error');
+            throw err;
+        }
+    };
+
     const value = {
         species,
         searchValue,
         searchResults,
         processedSearchResults,
         selectedPet,
+        createdPets,
 
         setSpecies,
         setSearchValue,
         setSelectedPet,
+        setCreatedPets,
+        addCreatedPet: (pet) => setCreatedPets(prev => [pet, ...prev]),
+        deleteCreatedPet,
+        updateCreatedPet,
+        loadCreatedPets: async () => {
+            try {
+                const resp = await fetch('/api/pets', { credentials: 'include' });
+                if (!resp.ok) return;
+                const data = await resp.json();
+                const list = Array.isArray(data) ? data : [];
+                const enrichPet = async (p) => {
+                    const petCopy = { ...p };
+                    const specie = petCopy.species || 'dog';
+                    const makeImageUrl = (b) => {
+                        if (!b) return null;
+                        const id = b.reference_image_id || b.image?.id;
+                        if (!id) return null;
+                        return `https://cdn2.the${specie}api.com/images/${id}.jpg`;
+                    };
+                    if (petCopy.breedDetails) {
+                        petCopy.imageUrl = petCopy.imageUrl || makeImageUrl(petCopy.breedDetails);
+                        return petCopy;
+                    }
+                    try {
+                        const apiBase = specie === 'dog' ? 'https://api.thedogapi.com/v1' : 'https://api.thecatapi.com/v1';
+                        const q = encodeURIComponent(petCopy.breed || '');
+                        if (!q) return petCopy;
+                        const resp2 = await fetch(`${apiBase}/breeds/search?q=${q}`);
+                        if (!resp2.ok) return petCopy;
+                        const arr = await resp2.json();
+                        if (Array.isArray(arr) && arr.length > 0) {
+                            const b = arr[0];
+                            petCopy.breedDetails = b;
+                            petCopy.imageUrl = makeImageUrl(b);
+                        }
+                    } catch (err) {
+                        console.error('enrichPet error', err);
+                    }
+                    return petCopy;
+                };
+                const enriched = await Promise.all(list.map(enrichPet));
+                setCreatedPets(enriched);
+            } catch (err) {
+                console.error('loadCreatedPets error', err);
+            }
+        },
         handleSearch,
         getImageUrl,
         showPopupModal,

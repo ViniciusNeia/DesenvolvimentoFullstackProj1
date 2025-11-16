@@ -29,6 +29,8 @@ function Card({
             setSelectedPet(pet);
         }
     };
+    const breed = pet?.breedDetails || { temperament, life_span: lifeSpan, origin, weight, height, bred_for: description, breed_group: subtitle };
+    const apiDescription = breed.description || breed.temperament || breed.bred_for;
     return (
         <div className={styles.floatingCard} onClick={handleClick} style={{ cursor: pet ? "pointer" : "default" }}>
             {image && (
@@ -37,45 +39,55 @@ function Card({
             <div className={styles.cardBody}>
                 <h3 className={styles.cardTitle}>{title}</h3>
 
-                {subtitle && (
+                {pet?.age && (
+                    <p className={styles.cardAge}><strong>Age:</strong> {pet.age}</p>
+                )}
+
+                {subtitle || breed.breed_group ? (
                     <h4 className={styles.cardSubtitle}>
-                        <strong>Group:</strong> {subtitle}
+                        <strong>Group:</strong> {subtitle || breed.breed_group}
                     </h4>
-                )}
+                ) : null}
 
-                {description && (
+                {pet?.description && (
                     <p className={styles.cardDescription}>
-                        <strong>Bred for:</strong> {description}
+                        <strong>Description:</strong> {pet.description}
                     </p>
                 )}
 
-                {temperament && (
+                {apiDescription && (
+                    <p className={styles.cardApiDescription}>
+                        <strong>Breed Info:</strong> {apiDescription}
+                    </p>
+                )}
+
+                {breed.temperament && (
                     <p className={styles.cardTemperament}>
-                        <strong>Temperament:</strong> {temperament}
+                        <strong>Temperament:</strong> {breed.temperament}
                     </p>
                 )}
 
-                {origin && (
+                {breed.origin && (
                     <p className={styles.cardOrigin}>
-                        <strong>Origin:</strong> {origin}
+                        <strong>Origin:</strong> {breed.origin}
                     </p>
                 )}
 
-                {lifeSpan && (
+                {breed.life_span && (
                     <p className={styles.cardLifeSpan}>
-                        <strong>Life Expectancy:</strong> {lifeSpan}
+                        <strong>Life Expectancy:</strong> {breed.life_span}
                     </p>
                 )}
 
-                {weight && (
+                {breed.weight && (
                     <p className={styles.cardWeight}>
-                        <strong>Weight:</strong> {weight.metric} kg ({weight.imperial} lbs)
+                        <strong>Weight:</strong> {breed.weight.metric} kg ({breed.weight.imperial} lbs)
                     </p>
                 )}
 
-                {height && (
+                {breed.height && (
                     <p className={styles.cardHeight}>
-                        <strong>Height:</strong> {height.metric} cm ({height.imperial} in)
+                        <strong>Height:</strong> {breed.height.metric} cm ({breed.height.imperial} in)
                     </p>
                 )}
 

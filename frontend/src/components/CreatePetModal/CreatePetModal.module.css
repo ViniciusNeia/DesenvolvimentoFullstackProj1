@@ -1,0 +1,151 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.55);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expandedCard {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+  max-width: 520px;
+  width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding-bottom: 1.5rem;
+  animation: fadeIn 0.16s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #333;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.cardImage {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.cardBody {
+  padding: 1.2rem 2rem 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #1a2327;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.cardSubtitle {
+  font-size: 1.05rem;
+  color: #ffb347;
+  margin-bottom: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.cardDescription, .cardTemperament, .cardOrigin, .cardLifeSpan, .cardWeight, .cardHeight , .cardFullDescription{
+  font-size: 0.98rem;
+  color: #222;
+  margin-bottom: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.cardSpecies {
+  display: inline-block;
+  background: #ffb347;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  letter-spacing: 1px;
+  margin-top: 0.5rem;
+}
+
+.form label { 
+    display:block; 
+    margin-top:10px; 
+    font-weight:600;
+    color: #1a2327; 
+}
+.form input, .form textarea { 
+    width: 100%; 
+    padding:8px; 
+    margin-top:6px; 
+    border:1px solid #eee; 
+    border-radius:6px; 
+}
+.breedRow { 
+    display:flex; 
+    gap:8px; 
+    width: 100%;
+}
+.breedRow select { 
+    flex:1; 
+    padding:8px; 
+    border:1px solid #eee; 
+    border-radius:6px 
+}
+.breedRow button { 
+    padding:8px 12px 
+}
+.breedDetails { 
+    margin-top:8px;
+    background:#fafafa; 
+    padding:8px; 
+    border-radius:8px; 
+    border:1px solid #f0f0f0
+ }
+.actions { 
+    display:flex; 
+    justify-content:flex-end; 
+    margin-top:12px 
+}
+.primary { 
+    background:#0077ff; 
+    color:#ffffff; 
+    border:none; 
+    padding:8px 14px; 
+    border-radius:8px; 
+    margin-right: 5px;
+    cursor:pointer 
+}
+
+@media (max-width: 600px) {
+  .expandedCard { max-width: 98vw; padding: 0 0 1rem 0; }
+  .cardBody { padding: 0.8rem; }
+}
+.selectSpecies {
+    margin-bottom: 8px;
+    width: 10%;
+}

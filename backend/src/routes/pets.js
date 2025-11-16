@@ -2,6 +2,7 @@ import express from "express";
 import { body, validationResult } from "express-validator";
 import { admin } from "../config/firebase.js";
 import { createPet, getPetsByOwner } from "../models/petModel.js";
+import { updatePet, deletePet } from "../models/petModel.js";
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.post(
     verifySessionCookie,
     body("name").isString().notEmpty(),
     body("breed").optional().isString(),
+    body("species").optional().isIn(["dog","cat"]),
     body("age").optional().isNumeric(),
     body("description").optional().isString(),
     async (req, res) => {
@@ -32,10 +34,10 @@ router.post(
             return res.status(400).json({ errors: errors.array() });
 
         const ownerUid = req.user.uid;
-        const { name, breed, age, description } = req.body;
+        const { name, breed, age, description, species } = req.body;
 
         try {
-            const result = await createPet(ownerUid, { name, breed, age, description });
+            const result = await createPet(ownerUid, { name, breed, age, description, species });
             return res.status(201).json({ id: result.id });
         } catch (err) {
             console.error("Erro ao salvar pet:", err);
@@ -50,7 +52,51 @@ router.get("/", verifySessionCookie, async (req, res) => {
         return res.json(pets);
     } catch (err) {
         console.error("Erro listar pets:", err);
+        const msg = err?.message || "Erro ao listar pets";
+        if (msg.includes('index') || msg.includes('requires an index')) {
+            return res.status(400).json({ error: msg });
+        }
         return res.status(500).json({ error: "Erro ao listar pets" });
+    }
+});
+
+router.put(
+    "/:id",
+    verifySessionCookie,
+    async (req, res) => {
+        const petId = req.params.id;
+        const ownerUid = req.user.uid;
+        const updates = req.body || {};
+        try {
+
+            const doc = await admin.firestore().collection('pets').doc(petId).get();
+            if (!doc.exists) return res.status(404).json({ error: 'Pet não encontrado' });
+            const data = doc.data();
+            if (data.ownerUid !== ownerUid) return res.status(403).json({ error: 'Não autorizado' });
+
+            const updated = await updatePet(petId, updates);
+            return res.json(updated);
+        } catch (err) {
+            console.error('Erro atualizar pet:', err);
+            return res.status(500).json({ error: 'Erro ao atualizar pet' });
+        }
+    }
+);
+
+router.delete('/:id', verifySessionCookie, async (req, res) => {
+    const petId = req.params.id;
+    const ownerUid = req.user.uid;
+    try {
+        const doc = await admin.firestore().collection('pets').doc(petId).get();
+        if (!doc.exists) return res.status(404).json({ error: 'Pet não encontrado' });
+        const data = doc.data();
+        if (data.ownerUid !== ownerUid) return res.status(403).json({ error: 'Não autorizado' });
+
+        await deletePet(petId);
+        return res.json({ success: true });
+    } catch (err) {
+        console.error('Erro deletar pet:', err);
+        return res.status(500).json({ error: 'Erro ao deletar pet' });
     }
 });
 

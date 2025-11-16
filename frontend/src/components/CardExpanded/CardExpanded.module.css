@@ -55,7 +55,7 @@
 }
 
 .cardBody {
-	padding: 1.5rem 1.2rem 0.5rem 1.2rem;
+	padding: 1.5rem 1.2rem 3.5rem 1.2rem;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -93,6 +93,81 @@
 	margin-top: 0.5rem;
 }
 
+.topBadgeContainer {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 0.5rem;
+}
+
+.editFormTop label { 
+	display:block; 
+	margin-top:6px; 
+	font-weight:600; 
+	color:#1a2327 
+}
+.editFormTop input, .editFormTop textarea { 
+	width:100%; 
+	padding:8px; 
+	margin-top:4px; 
+	border-radius:6px; 
+	border:1px solid #ddd 
+}
+
+.actionFooter {
+	left: 0;
+	right: 0;
+	bottom: 12px;
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+	padding: 8px 16px;
+	background: linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.6));
+	border-bottom-left-radius: 1.5rem;
+	border-bottom-right-radius: 1.5rem;
+}
+
+.actionButton {
+	background: #ffb347;
+	border: none;
+	color: #fff;
+	padding: 0.4rem 0.8rem;
+	border-radius: 0.6rem;
+	cursor: pointer;
+	font-weight: 600;
+}
+.deleteButton {
+	background: #e74c3c;
+	border: none;
+	color: #fff;
+	padding: 0.4rem 0.8rem;
+	border-radius: 0.6rem;
+	cursor: pointer;
+	font-weight: 600;
+}
+.editForm label { 
+	display:block; 
+	margin-top:8px; 
+	font-weight:600; 
+	color: #1a2327;
+}
+.editForm input, .editForm textarea { 
+	width: 100%; 
+	padding:8px; 
+	margin-top:4px; 
+	border-radius:6px; 
+	border:1px solid #ddd; 
+}
+.cardAge{
+	color: #000;
+}
+
+.cardBreed {
+	font-size: 1rem;
+	color: #666;
+	margin-left: 0.6rem;
+	font-weight: 600;
+}
 @media (max-width: 600px) {
 	.expandedCard {
 		max-width: 98vw;

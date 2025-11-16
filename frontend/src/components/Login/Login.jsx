@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import styles from "./Login.module.css";
 
 function Login() {
@@ -7,13 +8,14 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validate = () => {
     if (!email || !password) {
       setError("Please enter both email and password.");
       return false;
     }
-    // simple email check
+    
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address.");
       return false;
@@ -26,9 +28,14 @@ function Login() {
     e.preventDefault();
     if (!validate()) return;
 
-    // mock login: accept any credentials and navigate to home
-    // In a real app, call backend auth endpoint here
-    navigate("/");
+    setError(null);
+    login(email, password)
+      .then(() => {
+        navigate("/home");
+      })
+      .catch((err) => {
+        setError(err?.message || "Falha ao autenticar");
+      });
   };
 
   return (

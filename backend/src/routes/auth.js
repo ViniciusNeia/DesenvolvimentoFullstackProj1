@@ -36,7 +36,6 @@ router.post(
     }
 );
 
-// Login
 router.post(
     "/login",
     body("email").isEmail(),
@@ -84,6 +83,20 @@ router.post(
 router.post("/logout", (req, res) => {
     res.clearCookie("session");
     res.json({ message: "Sessão encerrada" });
+});
+
+
+router.get("/me", async (req, res) => {
+    try {
+        const sessionCookie = req.cookies?.session;
+        if (!sessionCookie) return res.status(401).json({ error: "Não autenticado" });
+
+        const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true);
+        return res.json({ uid: decodedClaims.uid, email: decodedClaims.email, name: decodedClaims.name || decodedClaims.displayName });
+    } catch (err) {
+        console.error("/me erro:", err);
+        return res.status(401).json({ error: "Sessão inválida ou expirada" });
+    }
 });
 
 export default router;

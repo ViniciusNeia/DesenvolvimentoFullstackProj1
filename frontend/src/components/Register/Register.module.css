@@ -1,0 +1,118 @@
+.page {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #000;
+    background-image: linear-gradient(rgba(8,12,14,0.55), rgba(8,12,14,0.55)), url('/DogBanner.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.card {
+    width: 420px;
+    max-width: 95vw;
+    background: rgba(255,255,255,0.92);
+    border-radius: 1rem;
+    box-shadow: 0 12px 30px rgba(8,12,14,0.45);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    max-height: 90vh;
+    overflow: auto;
+    border: 1px solid rgba(255,179,71,0.12);
+}
+
+.title {
+    font-family: "Alex Brush", cursive;
+    font-size: 3rem;
+    color: #f1d0a0;
+    margin: 0 0 0.2rem 0;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+.subtitle {
+    color: #f3e7d9;
+    margin-bottom: 1rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}
+
+.label {
+    text-align: left;
+    font-size: 0.85rem;
+    color: #44484a;
+}
+
+.input {
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.6rem;
+    border: 1px solid rgba(20,20,20,0.06);
+    background: #fff;
+    color: #0b0f0f;
+    outline: none;
+    font-size: 1rem;
+}
+.input:focus {
+    box-shadow: 0 0 0 4px rgba(255,179,71,0.08);
+    border-color: #ffb347;
+}
+
+.actions {
+    margin-top: 0.6rem;
+}
+
+.primary {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(90deg, #ffb347 0%, #ff8a47 100%);
+    border: none;
+    color: #111;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(255,139,71,0.18);
+}
+
+.primary:hover {
+    filter: brightness(0.98);
+}
+
+.error {
+    background: #fff4f4;
+    color: #9b1c1c;
+    border: 1px solid #ffd6d6;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.6rem;
+    margin-bottom: 0.6rem;
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.footerNote {
+    margin-top: 1rem;
+    color: #6b7280;
+}
+
+.footerNote a {
+    color: #ff8a47;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.footerNote a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .card { padding: 1.2rem; }
+    .title { font-size: 1.8rem; }
+}

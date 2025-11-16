@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./CreatePetModal.module.css";
-import { usePetContext } from "../../contexts/PetContext.jsx";
+import { usePetContext } from "../PetContext.jsx";
 
 function CreatePetModal({ isOpen, onClose }) {
   const { species: defaultSpecies, showPopupModal, addCreatedPet } = usePetContext();

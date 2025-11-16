@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Card.module.css";
-import { usePetContext } from "../../contexts/PetContext.jsx";
+import { usePetContext } from "../PetContext.jsx";
 
 function capitalizeFirstLetter(str) {
     if (typeof str !== "string" || str.length === 0) {

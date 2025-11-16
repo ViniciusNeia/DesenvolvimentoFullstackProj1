@@ -1,5 +1,5 @@
 import React from "react";
-import { usePetContext } from "../../contexts/PetContext.jsx";
+import { usePetContext } from "../PetContext.jsx";
 import Card from "../Card/Card.jsx";
 import styles from "./CreatedPets.module.css";
 

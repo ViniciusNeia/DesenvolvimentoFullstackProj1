@@ -2,7 +2,8 @@ import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home from './components/Home/Home.jsx'
 import Login from './components/Login/Login.jsx'
-import { PetProvider } from './contexts/PetContext.jsx'
+import Register from './components/Register/Register.jsx'
+import { PetProvider } from './components/PetContext.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 
 function RequireAuth({ children }) {
@@ -20,6 +21,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Navigate to="/login" replace />} />
                         <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
                         <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
                     </Routes>
                 </BrowserRouter>

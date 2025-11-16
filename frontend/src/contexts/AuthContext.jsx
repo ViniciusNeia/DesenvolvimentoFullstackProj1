@@ -49,6 +49,27 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function register(email, password, nome) {
+    try {
+      const resp = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password, nome }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err?.error || "Registration failed");
+      }
+
+      await checkSession();
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async function logout() {
     try {
       await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
@@ -60,9 +81,9 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 }
 

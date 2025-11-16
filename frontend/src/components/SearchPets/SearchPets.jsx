@@ -3,7 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import styles from "./SearchPets.module.css";
 import Card from "../Card/Card.jsx";
 import CardExpanded from "../CardExpanded/CardExpanded.jsx";
-import { usePetContext } from "../../contexts/PetContext.jsx";
+import { usePetContext } from "../PetContext.jsx";
 
 function SearchPets() {
     const {

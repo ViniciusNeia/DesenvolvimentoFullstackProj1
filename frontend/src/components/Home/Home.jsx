@@ -1,3 +1,4 @@
+import React from "react";
 import Banner from "../Banner/Banner.jsx";
 import Footer from "../Footer/Footer.jsx";
 import styles from "./Home.module.css";
@@ -15,6 +16,11 @@ function Home() {
     const [view, setView] = useState('search');
     const { selectedPet } = usePetContext();
     const { user, logout } = useAuth();
+    React.useEffect(() => {
+        function onCreated() { setView('created'); }
+        window.addEventListener('createdPetAdded', onCreated);
+        return () => window.removeEventListener('createdPetAdded', onCreated);
+    }, []);
     return (
         <div className="homeMain">
             <div className={styles.header}>

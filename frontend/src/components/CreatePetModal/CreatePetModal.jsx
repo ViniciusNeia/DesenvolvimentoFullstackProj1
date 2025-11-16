@@ -3,7 +3,7 @@ import styles from "./CreatePetModal.module.css";
 import { usePetContext } from "../PetContext.jsx";
 
 function CreatePetModal({ isOpen, onClose }) {
-  const { species: defaultSpecies, showPopupModal, addCreatedPet } = usePetContext();
+  const { species: defaultSpecies, showPopupModal, addCreatedPet, loadCreatedPets } = usePetContext();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [description, setDescription] = useState("");
@@ -71,8 +71,9 @@ function CreatePetModal({ isOpen, onClose }) {
         imageUrl: makeImageUrl(breedDetails),
       };
       addCreatedPet(created);
+      try { await loadCreatedPets(); } catch (e){}
+      try { window.dispatchEvent(new CustomEvent('createdPetAdded', { detail: created })); } catch (e) {}
       showPopupModal("Sucesso", "Pet cadastrado com sucesso", "success");
-      // reset
       setName("");
       setAge("");
       setSelectedBreedId("");

@@ -8,7 +8,7 @@ import CreatePetModal from "../CreatePetModal/CreatePetModal.jsx";
 import CreatedPets from "../CreatedPets/CreatedPets.jsx";
 import { useState } from "react";
 import CardExpanded from "../CardExpanded/CardExpanded.jsx";
-import { usePetContext } from "../PetContext.jsx";
+import { usePetContext } from "../../contexts/PetContext.jsx";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 
 function Home() {

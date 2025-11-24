@@ -1,14 +1,15 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
-import fetch from "node-fetch";
-import { admin } from "../config/firebase.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { connect } from "../config/mongo.js";
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
 router.use(express.json());
 
-const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
-const SESSION_EXPIRES_IN =
-    +process.env.SESSION_EXPIRES_IN || 7 * 24 * 60 * 60 * 1000; // 7 dias
+const USERS_COLLECTION = "users";
+const SESSION_EXPIRES_IN = +process.env.SESSION_EXPIRES_IN || 7 * 24 * 60 * 60 * 1000;
 
 router.post(
     "/register",
@@ -16,23 +17,27 @@ router.post(
     body("password").isLength({ min: 6 }),
     async (req, res) => {
         const errors = validationResult(req);
-        if (!errors.isEmpty())
-            return res.status(400).json({ errors: errors.array() });
+        if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
         const { email, password, displayName } = req.body;
-        try {
-            const userRecord = await admin.auth().createUser({
-                email,
-                password,
-                displayName,
-            });
-            return res
-                .status(201)
-                .json({ uid: userRecord.uid, email: userRecord.email });
-        } catch (err) {
-            console.error("Erro ao criar usuário:", err);
-            return res.status(400).json({ error: err.message });
-        }
+        const db = await connect();
+
+        const existing = await db.collection(USERS_COLLECTION).findOne({ email });
+        if (existing) return res.status(400).json({ error: "Email já registrado" });
+
+        const hashed = await bcrypt.hash(password, 10);
+
+        const result = await db.collection(USERS_COLLECTION).insertOne({
+            email,
+            password: hashed,
+            displayName,
+            createdAt: new Date()
+        });
+
+        return res.status(201).json({
+            uid: result.insertedId,
+            email
+        });
     }
 );
 
@@ -42,41 +47,31 @@ router.post(
     body("password").isString().notEmpty(),
     async (req, res) => {
         const errors = validationResult(req);
-        if (!errors.isEmpty())
-            return res.status(400).json({ errors: errors.array() });
+        if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
         const { email, password } = req.body;
-        try {
-            const resp = await fetch(
-                `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password, returnSecureToken: true }),
-                }
-            );
+        const db = await connect();
 
-            const data = await resp.json();
-            if (data.error)
-                return res.status(401).json({ error: data.error.message });
+        const user = await db.collection(USERS_COLLECTION).findOne({ email });
+        if (!user) return res.status(401).json({ error: "Credenciais inválidas" });
 
-            const idToken = data.idToken;
-            const sessionCookie = await admin
-                .auth()
-                .createSessionCookie(idToken, { expiresIn: SESSION_EXPIRES_IN });
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) return res.status(401).json({ error: "Credenciais inválidas" });
 
-            res.cookie("session", sessionCookie, {
-                maxAge: SESSION_EXPIRES_IN,
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
-            });
+        const token = jwt.sign(
+            { uid: user._id, email: user.email, name: user.displayName },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
-            return res.json({ message: idToken });
-        } catch (err) {
-            console.error("Erro login:", err);
-            return res.status(500).json({ error: "Erro no servidor" });
-        }
+        res.cookie("session", token, {
+            maxAge: SESSION_EXPIRES_IN,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax"
+        });
+
+        return res.json({ message: token });
     }
 );
 
@@ -85,16 +80,19 @@ router.post("/logout", (req, res) => {
     res.json({ message: "Sessão encerrada" });
 });
 
-
 router.get("/me", async (req, res) => {
     try {
-        const sessionCookie = req.cookies?.session;
-        if (!sessionCookie) return res.status(401).json({ error: "Não autenticado" });
+        const token = req.cookies?.session;
+        if (!token) return res.status(401).json({ error: "Não autenticado" });
 
-        const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true);
-        return res.json({ uid: decodedClaims.uid, email: decodedClaims.email, name: decodedClaims.name || decodedClaims.displayName });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        return res.json({
+            uid: decoded.uid,
+            email: decoded.email,
+            name: decoded.name
+        });
     } catch (err) {
-        console.error("/me erro:", err);
         return res.status(401).json({ error: "Sessão inválida ou expirada" });
     }
 });

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useMemo } from 'react';
-import Popup from './PopUp/Popup.jsx';
+import Popup from '../components/PopUp/Popup.jsx';
 
 const PetContext = createContext();
 

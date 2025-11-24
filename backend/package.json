@@ -7,6 +7,7 @@
     "dev": "nodemon --watch src/config src/config/server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -16,6 +17,7 @@
     "express-validator": "^7.2.0",
     "firebase-admin": "^12.0.0",
     "helmet": "^7.1.0",
+    "mongodb": "^7.0.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {

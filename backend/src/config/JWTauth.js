@@ -1,13 +1,20 @@
 import jwt from 'jsonwebtoken';
 
 function verifyToken(req, res, next) {
-    const token = req.cookies.token;
+    const token = req.cookies.session;
+
+    if (!token) {
+        console.log(`[SECURITY] ${new Date().toISOString()} - auth_failure: Token ausente - IP: ${req.ip}`);
+        return res.status(401).json({ error: "Não autenticado" });
+    }
+
     try {
-        const user = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = user;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
         next();
     } catch (error) {
-        return res.redirect('/login')
+        console.log(`[SECURITY] ${new Date().toISOString()} - auth_failure: Token inválido - IP: ${req.ip} - Erro: ${error.message}`);
+        return res.status(401).json({ error: "Sessão inválida ou expirada" });
     }
 }
 

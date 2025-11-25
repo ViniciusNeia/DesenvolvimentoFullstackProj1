@@ -51,7 +51,10 @@ function Card({
 
                 {pet?.description && (
                     <p className={styles.cardDescription}>
-                        <strong>Description:</strong> {pet.description}
+                    <strong>Description:</strong>{" "}
+                        {pet.description.length > 120 
+                            ? pet.description.slice(0, 120) + "..." 
+                            : pet.description}
                     </p>
                 )}
 

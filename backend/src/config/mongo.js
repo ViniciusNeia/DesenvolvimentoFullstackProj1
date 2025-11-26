@@ -18,7 +18,7 @@ async function connect() {
         if (!dbInstance) {
             await client.connect();
             dbInstance = client.db(dbName);
-            console.log('✓ Conectado ao MongoDB com pool de conexões');
+            console.log('Conectado ao MongoDB com pool de conexões');
         }
         return dbInstance;
     } catch (err) {
@@ -31,7 +31,7 @@ async function closeConnection() {
     if (client) {
         await client.close();
         dbInstance = null;
-        console.log('✓ Conexão com MongoDB fechada');
+        console.log('Conexão com MongoDB fechada');
     }
 }
 

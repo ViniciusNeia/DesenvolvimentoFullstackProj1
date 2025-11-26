@@ -107,7 +107,7 @@ function CardExpanded() {
             )}
           </section>
 
-          {isLocal && !isEditing && (
+          {isLocal && (
             <section className={styles.section}>
               <h3>Informações do Pet</h3>
 

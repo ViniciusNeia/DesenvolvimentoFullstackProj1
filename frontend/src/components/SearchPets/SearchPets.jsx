@@ -4,6 +4,7 @@ import styles from "./SearchPets.module.css";
 import Card from "../Card/Card.jsx";
 import CardExpanded from "../CardExpanded/CardExpanded.jsx";
 import { usePetContext } from "../../contexts/PetContext.jsx";
+import SearchBar from "../SearchBar/SearchBar.jsx";
 
 function SearchPets() {
     const {
@@ -17,26 +18,19 @@ function SearchPets() {
 
     return (
         <div className="container mt-4">
-            <div className={styles.searchBarContainer}>
-                <div className={styles.icon}>
-                    <FaSearch />
-                </div>
-                <input
-                    className={styles.input}
-                    type="text"
-                    placeholder="Type a breed..."
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                />
+            <SearchBar
+                placeholder="Type a breed..."
+                value={searchValue}
+                onChange={setSearchValue}>
                 <select
                     className={styles.toggleButtonGroup}
                     value={species}
-                    onChange={(e) => setSpecies(e.target.value)}
-                >
+                    onChange={(e) => setSpecies(e.target.value)}>
                     <option value="dog">Dog</option>
                     <option value="cat">Cat</option>
                 </select>
-            </div>
+            </SearchBar>
+
 
 
             <div className={styles.cardsContainer}>

@@ -3,12 +3,12 @@ import { ObjectId } from "mongodb";
 
 const PET_COLLECTION = "pets";
 
-// CREATE
 export async function createPet(ownerUid, petData) {
     const db = await connect();
     const result = await db.collection(PET_COLLECTION).insertOne({
         ownerUid,
         ...petData,
+        isLocal: true,
         createdAt: new Date(),
     });
 
@@ -47,7 +47,6 @@ export async function getAllPets() {
     }));
 }
 
-// UPDATE
 export async function updatePet(petId, updates) {
     const db = await connect();
 
@@ -71,7 +70,6 @@ export async function updatePet(petId, updates) {
     };
 }
 
-// DELETE
 export async function deletePet(petId) {
     const db = await connect();
 

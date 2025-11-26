@@ -17,11 +17,12 @@ export const PetProvider = ({ children }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [selectedPet, setSelectedPet] = useState(null);
     const [createdPets, setCreatedPets] = useState([]);
-
+    const [createdSearch, setCreatedSearch] = useState("");
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [popupTitle, setPopupTitle] = useState("");
     const [popupMessage, setPopupMessage] = useState("");
     const [popupType, setPopupType] = useState("info");
+    const lastCreatedSearchRef = useRef("");
 
     const debounceTimeout = useRef();
 
@@ -212,7 +213,18 @@ export const PetProvider = ({ children }) => {
             throw err;
         }
     };
-
+    const checkCreatedPetsSearch = (filteredPets, searchText) => {
+        const trimmed = (searchText || "").trim();
+        if (
+            trimmed !== "" && filteredPets.length === 0 && trimmed !== lastCreatedSearchRef.current) {
+            lastCreatedSearchRef.current = trimmed;
+            showPopupModal(
+                "Nenhum resultado encontrado",
+                "Não encontramos nenhum pet criado que corresponda à sua busca.",
+                "warning"
+            );
+        }
+    };
     const value = {
         species,
         searchValue,
@@ -220,7 +232,10 @@ export const PetProvider = ({ children }) => {
         processedSearchResults,
         selectedPet,
         createdPets,
-
+        createdSearch,
+        
+        checkCreatedPetsSearch,
+        setCreatedSearch,
         setSpecies,
         setSearchValue,
         setSelectedPet,
